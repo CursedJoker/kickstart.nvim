@@ -254,6 +254,7 @@ do
   })
 end
 
+
 -- ============================================================
 -- SECTION 3: PLUGIN MANAGER INTRO
 -- vim.pack intro, build hooks
@@ -404,19 +405,19 @@ do
   }
 
   -- Useful plugin to show you pending keybinds.
-  vim.pack.add { gh 'folke/which-key.nvim' }
-  require('which-key').setup {
-    -- Delay between pressing a key and opening which-key (milliseconds)
-    delay = 0,
-    icons = { mappings = vim.g.have_nerd_font },
-    -- Document existing key chains
-    spec = {
-      { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
-      { '<leader>t', group = '[T]oggle' },
-      { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
-      { 'gr', group = 'LSP Actions', mode = { 'n' } },
-    },
-  }
+  -- vim.pack.add { gh 'folke/which-key.nvim' }
+  -- require('which-key').setup {
+  --   -- Delay between pressing a key and opening which-key (milliseconds)
+  --   delay = 0,
+  --   icons = { mappings = vim.g.have_nerd_font },
+  --   -- Document existing key chains
+  --   spec = {
+  --     { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
+  --     { '<leader>t', group = '[T]oggle' },
+  --     { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
+  --     { 'gr', group = 'LSP Actions', mode = { 'n' } },
+  --   },
+  -- }
 
   -- [[ Colorscheme ]]
   -- You can easily change to a different colorscheme.
@@ -563,7 +564,7 @@ do
   vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
   vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
   vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
-  vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+  vim.keymap.set('n', '<leader>b', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
   -- Add Telescope-based LSP pickers when an LSP attaches to a buffer.
   -- If you later switch picker plugins, this is where to update these mappings.
@@ -644,6 +645,20 @@ do
   -- (sometimes called LSP servers, but that's kind of like ATM Machine) are standalone
   -- processes that communicate with some "client" - in this case, Neovim!
   --
+  vim.keymap.set('n', '<leader>m', '<cmd>Mason<cr>', { desc = '[M]ason' })
+
+-- Transparent floating windows + colored rounded border
+local function set_float_style()
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+  vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#7aa2f7', bg = 'none' })
+  vim.api.nvim_set_hl(0, 'MiniClueBorder', { fg = '#7aa2f7', bg = 'none' })
+  vim.api.nvim_set_hl(0, 'MiniClueTitle', { fg = '#7aa2f7', bg = 'none' })
+end
+
+set_float_style()
+vim.api.nvim_create_autocmd('ColorScheme', {
+  callback = set_float_style,
+})
   -- LSP provides Neovim with features like:
   --  - Go to definition
   --  - Find references
@@ -788,8 +803,16 @@ do
   }
 
   -- Automatically install LSPs and related tools to stdpath for Neovim
-  require('mason').setup {}
-
+require('mason').setup {
+  ui = {
+    border = 'rounded',
+    icons = {
+      package_installed = '✓',
+      package_pending = '➜',
+      package_uninstalled = '✗',
+    },
+  },
+}
   -- Translates between nvim-lspconfig server names and mason.nvim package names (e.g. lua_ls <-> lua-language-server)
   require('mason-lspconfig').setup {
     automatic_enable = false, -- Change this to true if you want to automatically enable servers that are installed manually (e.g. via :Mason / :MasonInstall)
@@ -850,7 +873,7 @@ do
     },
   }
 
-  vim.keymap.set({ 'n', 'v' }, '<leader>f', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
+  vim.keymap.set({ 'n', 'v' }, '<leader>cf', function() require('conform').format { async = true } end, { desc = '[F]ormat buffer' })
 end
 
 -- ============================================================
