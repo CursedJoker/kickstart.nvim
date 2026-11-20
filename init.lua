@@ -1,3 +1,4 @@
+_G.nvim_start_time = vim.uv.hrtime()
 --[[
 
 =====================================================================
@@ -253,7 +254,6 @@ do
     callback = function() vim.hl.on_yank() end,
   })
 end
-
 
 -- ============================================================
 -- SECTION 3: PLUGIN MANAGER INTRO
@@ -749,7 +749,7 @@ vim.api.nvim_create_autocmd('ColorScheme', {
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
   local servers = {
-    -- clangd = {},
+    clangd = {},
     -- gopls = {},
     -- pyright = {},
     -- tsc = {},
@@ -892,8 +892,8 @@ do
   --    See the README about individual language/framework/plugin snippets:
   --    https://github.com/rafamadriz/friendly-snippets
   --
-  -- vim.pack.add { gh 'rafamadriz/friendly-snippets' }
-  -- require('luasnip.loaders.from_vscode').lazy_load()
+   vim.pack.add { gh 'rafamadriz/friendly-snippets' }
+   require('luasnip.loaders.from_vscode').lazy_load()
 
   -- [[ Autocomplete Engine ]]
   vim.pack.add { { src = gh 'saghen/blink.cmp', version = vim.version.range '1.*' } }
@@ -935,11 +935,11 @@ do
     completion = {
       -- By default, you may press `<c-space>` to show the documentation.
       -- Optionally, set `auto_show = true` to show the documentation after a delay.
-      documentation = { auto_show = false, auto_show_delay_ms = 500 },
+      documentation = { auto_show = true, auto_show_delay_ms = 200 },
     },
 
     sources = {
-      default = { 'lsp', 'path', 'snippets' },
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
 
     snippets = { preset = 'luasnip' },
@@ -956,6 +956,7 @@ do
     -- Shows a signature help window while you type arguments for a function
     signature = { enabled = true },
   }
+  
 end
 
 -- ============================================================
